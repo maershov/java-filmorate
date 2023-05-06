@@ -1,4 +1,4 @@
-package ru.yandex.practicum.conrollers;
+package ru.yandex.practicum.filmorate.conrollers;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -7,7 +7,6 @@ import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.Month;
 
 public class FilmControllerTest {
