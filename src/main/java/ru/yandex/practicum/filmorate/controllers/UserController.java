@@ -8,16 +8,17 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
 @Slf4j
 public class UserController {
-    private List<User> users = new ArrayList<>();
+    private HashMap<Integer, User> users = new HashMap<>();
 
     @GetMapping("/users")
     public List<User> getAllUsers() {
-        return users;
+        return new ArrayList<>(users.values());
     }
 
     @PostMapping("/users")
@@ -32,7 +33,7 @@ public class UserController {
         if (user.getName().isEmpty() || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
-        users.add(user);
+        users.put(user.getId(), user);
         log.info("Добавлен объект " + user);
         return user;
     }
@@ -48,14 +49,11 @@ public class UserController {
         if (user.getName().isEmpty() || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
-        for (User u : users) {
-            if (u.getId() == user.getId()) {
-                u = user;
-                log.info("изменен объект " + user);
-                return u;
-            }
+        if (users.containsKey(user.getId())) {
+            users.put(user.getId(), user);
+            return user;
         }
-        return null;
+        throw new ValidationException("Объект не найден", new IOException());
     }
 
     private void validate(User user) {

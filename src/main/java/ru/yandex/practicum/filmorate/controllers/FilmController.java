@@ -13,16 +13,17 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
 @Slf4j
 public class FilmController {
-    private List<Film> films = new ArrayList<>();
+    private HashMap<Integer, Film> films = new HashMap<>();
 
     @GetMapping("/films")
     public List<Film> getAllFilms() {
-        return films;
+        return new ArrayList<>(films.values());
     }
 
     @PostMapping("/films")
@@ -34,7 +35,7 @@ public class FilmController {
             throw ex;
         }
         film.setId(films.size() + 1);
-        films.add(film);
+        films.put(film.getId(), film);
         log.info("Добавлен объект " + film);
         return film;
     }
@@ -47,14 +48,12 @@ public class FilmController {
             log.info("Ошибка заполнения Film" + ex.getMessage());
             throw ex;
         }
-        for (Film f : films) {
-            if (f.getId() == film.getId()) {
-                f = film;
-                log.info("Изменен объект " + film);
-                return f;
-            }
+        if (films.containsKey(film.getId())) {
+            films.put(film.getId(), film);
+            log.info("Изменен объект " + film);
+            return film;
         }
-        return null;
+        throw new ValidationException("Объект не найден", new IOException());
     }
 
     private void validate(Film film) {

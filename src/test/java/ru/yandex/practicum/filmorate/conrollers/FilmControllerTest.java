@@ -24,6 +24,17 @@ public class FilmControllerTest {
     }
 
     @Test
+    public void filmUpdatetest() {
+        Film film = new Film(3, "film1", "", LocalDate.now(), Duration.ofHours(2));
+        film.setDescription("desc");
+        Film newFilm = fm.createFilm(film);
+        newFilm.setDescription("new desc");
+        Film updatedFilm = fm.updateFilm(newFilm);
+        Assertions.assertEquals(newFilm, updatedFilm);
+        Assertions.assertEquals(1, fm.getAllFilms().size());
+    }
+
+    @Test
     public void filmValidateNegativeDurationTest() {
         Film film = new Film(1, "film1", "", LocalDate.now(), Duration.ofHours(-2));
         film.setDescription("desc");
