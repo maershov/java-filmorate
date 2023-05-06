@@ -62,7 +62,7 @@ public class UserController {
         if (user == null) {
             throw new ValidationException("Передан пустой объект", new IOException());
         }
-        if(user.getEmail().isEmpty() || user.getEmail().isBlank()) {
+        if (user.getEmail().isEmpty() || user.getEmail().isBlank()) {
             throw new ValidationException("Невалидный email", new IOException());
         } else if (!user.getEmail().contains("@")) {
             throw new ValidationException("Невалидный email - должен содержать @", new IOException());
