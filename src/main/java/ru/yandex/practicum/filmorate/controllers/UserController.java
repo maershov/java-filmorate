@@ -26,9 +26,9 @@ public class UserController {
             validate(user);
         } catch (ValidationException ex) {
             log.info("Ошибка заполнения объекта User" + ex.getMessage());
-            return null;
+            throw ex;
         }
-        user.setId(users.size());
+        user.setId(users.size() + 1);
         if (user.getName().isEmpty() || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
@@ -43,7 +43,7 @@ public class UserController {
             validate(user);
         } catch (ValidationException ex) {
             log.info("Ошибка заполнения объекта User" + ex.getMessage());
-            return null;
+            throw ex;
         }
         if (user.getName().isEmpty() || user.getName().isBlank()) {
             user.setName(user.getLogin());

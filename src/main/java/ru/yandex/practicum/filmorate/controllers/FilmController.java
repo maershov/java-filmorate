@@ -31,9 +31,9 @@ public class FilmController {
             validate(film);
         } catch (ValidationException ex) {
             log.info("Ошибка заполнения Film" + ex.getMessage());
-            return null;
+            throw ex;
         }
-        film.setId(films.size());
+        film.setId(films.size() + 1);
         films.add(film);
         log.info("Добавлен объект " + film);
         return film;
@@ -45,7 +45,7 @@ public class FilmController {
             validate(film);
         } catch (ValidationException ex) {
             log.info("Ошибка заполнения Film" + ex.getMessage());
-            return null;
+            throw ex;
         }
         for (Film f : films) {
             if (f.getId() == film.getId()) {
