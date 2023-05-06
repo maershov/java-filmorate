@@ -30,7 +30,7 @@ public class UserController {
             throw ex;
         }
         user.setId(users.size() + 1);
-        if (user.getName().isEmpty() || user.getName().isBlank()) {
+        if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
         users.put(user.getId(), user);

@@ -14,7 +14,8 @@ public class UserControllerTest {
 
     @Test
     public void userCreatePositiveTest() {
-        User user = new User(1, "User1@mail.ru", "login", "name", LocalDate.now().minusYears(10));
+        User user = new User(1, "User1@mail.ru", "login",  LocalDate.now().minusYears(10));
+        user.setName("name");
         User newUser = uc.createUser(user);
         Assertions.assertEquals(user, newUser);
         Assertions.assertEquals(1, uc.getAllUsers().size());
@@ -22,7 +23,8 @@ public class UserControllerTest {
 
     @Test
     public void userUpdatetest() {
-        User user = new User(2, "User1@mail.ru", "login", "name", LocalDate.now().minusYears(10));
+        User user = new User(2, "User1@mail.ru", "login", LocalDate.now().minusYears(10));
+        user.setName("name");
         User newUser = uc.createUser(user);
         newUser.setEmail("newemail@mail.ru");
         User updatedUser = uc.updateUser(newUser);
@@ -31,13 +33,15 @@ public class UserControllerTest {
 
     @Test
     public void userValidateNegativeEmailTest() {
-        User user = new User(1, "", "login", "name",LocalDate.now().minusYears(10));
+        User user = new User(1, "", "login", LocalDate.now().minusYears(10));
+        user.setName("name");
         Assertions.assertThrows(ValidationException.class, () -> uc.createUser(user));
     }
 
     @Test
     public void userValidateNegativeLoginTest() {
-        User user = new User(1, "User1", "", "name",LocalDate.now().minusYears(10));
+        User user = new User(1, "User1", "", LocalDate.now().minusYears(10));
+        user.setName("name");
         Assertions.assertThrows(ValidationException.class, () -> uc.createUser(user));
     }
 

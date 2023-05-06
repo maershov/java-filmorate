@@ -13,7 +13,6 @@ public class User {
     private String email;
     @NonNull
     private String login;
-    @NonNull
     private String name;
     @NonNull
     private final LocalDate birthday;

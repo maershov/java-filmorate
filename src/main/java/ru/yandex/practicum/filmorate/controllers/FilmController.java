@@ -66,7 +66,7 @@ public class FilmController {
             throw new ValidationException("Невалидное описание", new IOException());
         } else if (film.getReleaseDate().isBefore(checkDate)) {
             throw new ValidationException("Невалидная дата", new IOException());
-        } else if (film.getDuration().isNegative()) {
+        } else if (film.getDuration() < 0) {
             throw new ValidationException("Невалидная продолжительность", new IOException());
         }
     }
