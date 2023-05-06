@@ -61,8 +61,7 @@ public class FilmController {
         LocalDate checkDate = LocalDate.of(1895, Month.DECEMBER, 28);
         if (film == null) {
             throw new ValidationException("Передан пустой объект", new IOException());
-        }
-        if (film.getName().isEmpty() || film.getName().isBlank()) {
+        } else if (film.getName().isEmpty() || film.getName().isBlank()) {
             throw new ValidationException("Невалидное название", new IOException());
         } else if (film.getDescription().length() > 200) {
             throw new ValidationException("Невалидное описание", new IOException());
