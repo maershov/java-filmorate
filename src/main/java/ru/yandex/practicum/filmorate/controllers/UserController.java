@@ -1,11 +1,12 @@
-package ru.yandex.practicum.controllers;
+package ru.yandex.practicum.filmorate.controllers;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.exception.ValidationException;
-import ru.yandex.practicum.model.User;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.model.User;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +21,7 @@ public class UserController {
         return users;
     }
 
-    @PostMapping("/user")
+    @PostMapping("/users")
     public User createUser(@RequestBody User user) {
         try {
             validate(user);
@@ -28,6 +29,7 @@ public class UserController {
             log.info("Ошибка заполнения объекта User" + ex.getMessage());
             return null;
         }
+        user.setId(users.size());
         if (user.getName().isEmpty() || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
@@ -36,7 +38,7 @@ public class UserController {
         return user;
     }
 
-    @PutMapping("/user")
+    @PutMapping("/users")
     public User updateUser(@RequestBody User user) {
         try {
             validate(user);
@@ -67,7 +69,7 @@ public class UserController {
             throw new ValidationException("Невалидный email - должен содержать @", new IOException());
         } else if (user.getLogin().isBlank() || user.getLogin().isEmpty() || user.getLogin().contains(" ")) {
             throw new ValidationException("Невалидный login", new IOException());
-        } else if (user.getBirthday().isAfter(LocalDateTime.now())) {
+        } else if (user.getBirthday().isAfter(LocalDate.now())) {
             throw new ValidationException("Невалидная дата рождения - дата в будущем", new IOException());
         }
     }

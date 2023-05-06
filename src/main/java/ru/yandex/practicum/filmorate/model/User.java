@@ -1,15 +1,16 @@
-package ru.yandex.practicum.model;
+package ru.yandex.practicum.filmorate.model;
 
 import lombok.Data;
 import lombok.NonNull;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
 public class User {
     @NonNull
-    private final int id;
+    private int id;
     @NonNull
     private String email;
     @NonNull
@@ -17,5 +18,5 @@ public class User {
     @NonNull
     private String name;
     @NonNull
-    private final LocalDateTime birthday;
+    private final LocalDate birthday;
 }

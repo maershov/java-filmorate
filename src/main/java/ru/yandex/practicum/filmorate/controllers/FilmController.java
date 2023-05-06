@@ -1,12 +1,16 @@
-package ru.yandex.practicum.controllers;
+package ru.yandex.practicum.filmorate.controllers;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.exception.ValidationException;
-import ru.yandex.practicum.model.Film;
-import ru.yandex.practicum.model.User;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.model.Film;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
@@ -22,7 +26,7 @@ public class FilmController {
         return films;
     }
 
-    @PostMapping("/film")
+    @PostMapping("/films")
     public Film createFilm(@RequestBody Film film) {
         try {
             validate(film);
@@ -30,12 +34,13 @@ public class FilmController {
             log.info("Ошибка заполнения Film" + ex.getMessage());
             return null;
         }
+        film.setId(films.size());
         films.add(film);
         log.info("Добавлен объект " + film);
         return film;
     }
 
-    @PutMapping("/film")
+    @PutMapping("/films")
     public Film updateFilm(@RequestBody Film film) {
         try {
             validate(film);
@@ -54,7 +59,7 @@ public class FilmController {
     }
 
     private void validate(Film film) {
-        LocalDateTime checkDate = LocalDateTime.of(1895, Month.DECEMBER, 28, 0, 0);
+        LocalDate checkDate = LocalDate.of(1895, Month.DECEMBER, 28);
         if (film == null) {
             throw new ValidationException("Передан пустой объект", new IOException());
         }

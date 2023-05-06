@@ -1,4 +1,4 @@
-package ru.yandex.practicum.exception;
+package ru.yandex.practicum.filmorate.exception;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
