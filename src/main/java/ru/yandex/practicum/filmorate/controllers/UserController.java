@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ public class UserController {
     }
 
     @PostMapping("/users")
-    public User createUser(@RequestBody User user) {
+    public User createUser(@Valid @RequestBody User user) {
         try {
             validate(user);
         } catch (ValidationException ex) {
@@ -39,7 +40,7 @@ public class UserController {
     }
 
     @PutMapping("/users")
-    public User updateUser(@RequestBody User user) {
+    public User updateUser(@Valid @RequestBody User user) {
         try {
             validate(user);
         } catch (ValidationException ex) {
@@ -61,8 +62,8 @@ public class UserController {
             throw new ValidationException("Передан пустой объект", new IOException());
         } else if (user.getEmail().isEmpty() || user.getEmail().isBlank()) {
             throw new ValidationException("Невалидный email", new IOException());
-        } else if (!user.getEmail().contains("@")) {
-            throw new ValidationException("Невалидный email - должен содержать @", new IOException());
+//        } else if (!user.getEmail().contains("@")) {
+//            throw new ValidationException("Невалидный email - должен содержать @", new IOException());
         } else if (user.getLogin().isBlank() || user.getLogin().isEmpty() || user.getLogin().contains(" ")) {
             throw new ValidationException("Невалидный login", new IOException());
         } else if (user.getBirthday().isAfter(LocalDate.now())) {
