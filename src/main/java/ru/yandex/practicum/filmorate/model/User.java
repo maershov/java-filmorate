@@ -15,7 +15,7 @@ public class User {
     private int id;
     @NonNull
     @Email(message = "Email should be valid")
-    @Pattern(regexp=".+@.+\\..+", message="Please provide a valid email address")
+    @Pattern(regexp = ".+@.+\\..+", message = "Please provide a valid email address")
     @NotBlank
     @NotNull
     private String email;
