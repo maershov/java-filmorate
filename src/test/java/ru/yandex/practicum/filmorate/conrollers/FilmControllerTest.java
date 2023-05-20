@@ -5,13 +5,15 @@ import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.controllers.FilmController;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
 
 import java.time.LocalDate;
 import java.time.Month;
 
 public class FilmControllerTest {
 
-    private FilmController fm = new FilmController();
+    private FilmController fm = new FilmController(new FilmService(new InMemoryFilmStorage()));
 
     @Test
     public void filmCreatePositiveTest() {
