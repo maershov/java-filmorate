@@ -5,8 +5,11 @@ import java.util.List;
 
 public interface UserStorage {
     public List<User> getAllUsers();
+
     public User createUser(User user);
+
     public User updateUser(User user);
+
     public User getUserById(Integer id);
 
 }

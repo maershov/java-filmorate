@@ -13,6 +13,7 @@ import java.util.List;
 @Component
 public class InMemoryUserStorage implements UserStorage {
     private HashMap<Integer, User> users = new HashMap<>();
+
     @Override
     public List<User> getAllUsers() {
         return new ArrayList<>(users.values());
