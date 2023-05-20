@@ -78,12 +78,11 @@ public class FilmService {
         return film;
     }
 
-    public List<Film> getTop10FilmsByLikes() {
-        final Integer amount = 10;
+    public List<Film> getTopFilmsByLikes(Integer count) {
         List<Film> films = filmStorage.getAllFilms();
         films.sort((film1, film2) -> Integer.compare(film2.getLikesUsersIds().size(), film1.getLikesUsersIds().size()));
         log.info("Получение топа фильмов по лайкам");
-        return films.stream().limit(amount).collect(Collectors.toList());
+        return films.stream().limit(count).collect(Collectors.toList());
     }
 
     private void validate(Film film) {

@@ -1,73 +1,57 @@
 package ru.yandex.practicum.filmorate.controllers;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.FilmService;
 
-import java.io.IOException;
-import java.time.LocalDate;
-import java.time.Month;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 @RestController
+@RequestMapping("/films")
 @Slf4j
 public class FilmController {
-    private HashMap<Integer, Film> films = new HashMap<>();
 
-    @GetMapping("/films")
+    private final FilmService filmService;
+
+    @Autowired
+    public FilmController(FilmService filmService) {
+        this.filmService = filmService;
+    }
+    @GetMapping
     public List<Film> getAllFilms() {
-        return new ArrayList<>(films.values());
+        return filmService.getAllFilms();
     }
 
-    @PostMapping("/films")
+    @PostMapping
     public Film createFilm(@RequestBody Film film) {
-        try {
-            validate(film);
-        } catch (ValidationException ex) {
-            log.info("Ошибка заполнения Film" + ex.getMessage());
-            throw ex;
-        }
-        film.setId(films.size() + 1);
-        films.put(film.getId(), film);
-        log.info("Добавлен объект " + film);
-        return film;
+        return filmService.createFilm(film);
     }
 
-    @PutMapping("/films")
+    @PutMapping
     public Film updateFilm(@RequestBody Film film) {
-        try {
-            validate(film);
-        } catch (ValidationException ex) {
-            log.info("Ошибка заполнения Film" + ex.getMessage());
-            throw ex;
-        }
-        if (films.containsKey(film.getId())) {
-            films.put(film.getId(), film);
-            log.info("Изменен объект " + film);
-            return film;
-        }
-        throw new ValidationException("Объект не найден", new IOException());
+        return filmService.updateFilm(film);
     }
 
-    private void validate(Film film) {
-        LocalDate checkDate = LocalDate.of(1895, Month.DECEMBER, 28);
-        if (film == null) {
-            throw new ValidationException("Передан пустой объект", new IOException());
-        } else if (film.getName().isEmpty() || film.getName().isBlank()) {
-            throw new ValidationException("Невалидное название", new IOException());
-        } else if (film.getDescription().length() > 200) {
-            throw new ValidationException("Невалидное описание", new IOException());
-        } else if (film.getReleaseDate().isBefore(checkDate)) {
-            throw new ValidationException("Невалидная дата", new IOException());
-        } else if (film.getDuration() < 0) {
-            throw new ValidationException("Невалидная продолжительность", new IOException());
-        }
+    @GetMapping("/{id}")
+    public Film getFilmById(@PathVariable Integer id) {
+        return filmService.getFilmById(id);
+    }
+
+    @PutMapping("/{id}/like/{userId}")
+    public Film addLike(@PathVariable Integer id, @PathVariable Integer userId) {
+        return filmService.addLike(id, userId);
+    }
+
+    @DeleteMapping("/{id}/like/{userId}")
+    public Film removeLike(@PathVariable Integer id, @PathVariable int userId) {
+        return filmService.removeLike(id, userId);
+    }
+
+    @GetMapping("/popular")
+    public List<Film> getMostPopularFilms(@RequestParam(name = "count", defaultValue = "10", required = false) Integer count) {
+        log.info("Получен запрос на получение 10 самых популярных фильмов");
+        return filmService.getTopFilmsByLikes(count);
     }
 }
