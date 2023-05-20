@@ -33,7 +33,7 @@ public class InMemoryUserStorage implements UserStorage {
             users.put(user.getId(), user);
             return user;
         }
-        throw new ValidationException("Объект не найден", new IOException());
+        throw new RuntimeException("Объект не найден", new IOException());
     }
 
     @Override
