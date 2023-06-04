@@ -31,6 +31,6 @@ public class ExceptionController {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleException(final Throwable e) {
         log.debug("500: Interval Server Error");
-        return new ErrorResponse("Interval Server Error", e.getMessage());
+        return new ErrorResponse("Interval Server Error", "Произошла внутрення ошибка");
     }
 }
