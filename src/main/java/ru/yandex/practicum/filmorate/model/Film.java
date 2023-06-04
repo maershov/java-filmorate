@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.NonNull;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 
 @Data
 public class Film {
@@ -17,5 +18,6 @@ public class Film {
     private final LocalDate releaseDate;
     @NonNull
     private final Integer duration;
+    private final HashSet<Integer> likesUsersIds = new HashSet<>();
 
 }
