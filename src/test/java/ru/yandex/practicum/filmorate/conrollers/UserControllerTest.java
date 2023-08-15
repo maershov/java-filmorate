@@ -18,7 +18,7 @@ import java.time.LocalDate;
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-class UserControllerTests {
+class UserControllerTest {
 
     private final UserController userController;
 
