@@ -38,7 +38,7 @@ class FilmControllerTest {
 
     @Test
     public void filmUpdatetest() {
-        Film film = Film.builder().id(3).name("film1").description("").releaseDate(LocalDate.now()).duration(100).mpa(new Mpa(4, "R")).genres(new ArrayList<Genre>()).likedByUserIds(new ArrayList<Integer>() ).build();
+        Film film = Film.builder().id(3).name("film1").description("").releaseDate(LocalDate.now()).duration(100).mpa(new Mpa(4, "R")).genres(new ArrayList<Genre>()).likedByUserIds(new ArrayList<Integer>()).build();
         film.setDescription("desc");
         Film newFilm = filmController.createFilm(film);
         newFilm.setDescription("new desc");
