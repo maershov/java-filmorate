@@ -17,7 +17,7 @@ public class FilmControllerTest {
 
     @Test
     public void filmCreatePositiveTest() {
-        Film film = new Film(1, "film1", "", LocalDate.now(), 100);
+        Film film = Film.builder().id(1).name("film1").description("").releaseDate(LocalDate.now()).duration(100).build();
         film.setDescription("desc");
         Film newFilm = fm.createFilm(film);
         Assertions.assertEquals(film, newFilm);
@@ -26,7 +26,7 @@ public class FilmControllerTest {
 
     @Test
     public void filmUpdatetest() {
-        Film film = new Film(3, "film1", "", LocalDate.now(), 100);
+        Film film = Film.builder().id(3).name("film1").description("").releaseDate(LocalDate.now()).duration(100).build();
         film.setDescription("desc");
         Film newFilm = fm.createFilm(film);
         newFilm.setDescription("new desc");
@@ -37,21 +37,21 @@ public class FilmControllerTest {
 
     @Test
     public void filmValidateNegativeDurationTest() {
-        Film film = new Film(1, "film1", "", LocalDate.now(), -100);
+        Film film = Film.builder().id(1).name("film1").description("").releaseDate(LocalDate.now()).duration(-100).build();
         film.setDescription("desc");
         Assertions.assertThrows(ValidationException.class, () -> fm.createFilm(film));
     }
 
     @Test
     public void filmValidateNegativeDateTest() {
-        Film film = new Film(1, "film1", "", LocalDate.of(1700, Month.DECEMBER, 12), 100);
+        Film film = Film.builder().id(1).name("film1").description("").releaseDate(LocalDate.of(1700, Month.DECEMBER, 12)).duration(100).build();
         film.setDescription("desc");
         Assertions.assertThrows(ValidationException.class, () -> fm.createFilm(film));
     }
 
     @Test
     public void filmValidateNegativeDescTest() throws ValidationException {
-        Film film = new Film(1, "film1", "", LocalDate.of(1700, Month.DECEMBER, 12), 100);
+        Film film = Film.builder().id(1).name("film1").description("").releaseDate(LocalDate.of(1700, Month.DECEMBER, 12)).duration(100).build();
         film.setDescription("a".repeat(201));
         Assertions.assertThrows(ValidationException.class, () -> fm.createFilm(film));
     }
