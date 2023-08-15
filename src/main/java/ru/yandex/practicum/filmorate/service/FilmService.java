@@ -3,10 +3,10 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.dao.film.FilmDao;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -17,15 +17,15 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class FilmService {
-    private final FilmStorage filmStorage;
+    private final FilmDao filmDao;
 
     @Autowired
-    public FilmService(FilmStorage fs) {
-        this.filmStorage = fs;
+    public FilmService(FilmDao fs) {
+        this.filmDao = fs;
     }
 
     public List<Film> getAllFilms() {
-        return filmStorage.getAllFilms();
+        return filmDao.findAllFilms();
     }
 
     public Film createFilm(Film film) {
@@ -35,7 +35,7 @@ public class FilmService {
             log.info("Ошибка заполнения Film" + ex.getMessage());
             throw ex;
         }
-        return filmStorage.createFilm(film);
+        return filmDao.createFilm(film);
     }
 
     public Film updateFilm(Film film) {
@@ -45,11 +45,11 @@ public class FilmService {
             log.info("Ошибка заполнения Film" + ex.getMessage());
             throw ex;
         }
-        return filmStorage.updateFilm(film);
+        return filmDao.updateFilm(film);
     }
 
     public Film getFilmById(int id) {
-        return filmStorage.getFilmById(id);
+        return filmDao.getFilmById(id);
     }
 
     public Film addLike(Integer filmId, Integer userId) {
@@ -79,7 +79,7 @@ public class FilmService {
     }
 
     public List<Film> getTopFilmsByLikes(Integer count) {
-        List<Film> films = filmStorage.getAllFilms();
+        List<Film> films = filmDao.findAllFilms();
         films.sort((film1, film2) -> Integer.compare(film2.getLikesUsersIds().size(), film1.getLikesUsersIds().size()));
         log.info("Получение топа фильмов по лайкам");
         return films.stream().limit(count).collect(Collectors.toList());

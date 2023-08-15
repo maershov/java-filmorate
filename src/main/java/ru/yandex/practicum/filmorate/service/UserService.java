@@ -3,10 +3,10 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.dao.user.UserDao;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -18,15 +18,15 @@ import java.util.stream.Collectors;
 @Slf4j
 public class UserService {
 
-    private UserStorage userStorage;
+    private final UserDao userDao;
 
     @Autowired
-    public UserService(UserStorage us) {
-        this.userStorage = us;
+    public UserService(UserDao us) {
+        this.userDao = us;
     }
 
     public List<User> getAllUsers() {
-        return userStorage.getAllUsers();
+        return userDao.findAllUsers();
     }
 
     public User createUser(User user) {
@@ -39,7 +39,7 @@ public class UserService {
         if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
-        return userStorage.createUser(user);
+        return userDao.createUser(user);
     }
 
     public User updateUser(User user) {
@@ -52,11 +52,11 @@ public class UserService {
         if (user.getName().isEmpty() || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
-        return userStorage.updateUser(user);
+        return userDao.updateUser(user);
     }
 
     public User getUserById(Integer id) {
-        return userStorage.getUserById(id);
+        return userDao.getUserById(id);
     }
 
     public User addFriend(Integer userId, Integer friendId) {
@@ -100,10 +100,10 @@ public class UserService {
                     "При поиске списка друзей для %s было передано отрицательные значения",
                     userId));
         }
-        User user = userStorage.getUserById(userId);
+        User user = userDao.getUserById(userId);
         List<User> friendsList = new ArrayList<>();
         for (Integer id : user.getFriendsIds()) {
-            friendsList.add(userStorage.getUserById(id));
+            friendsList.add(userDao.getUserById(id));
         }
         log.info(String.format("Получен список друзей для пользователя id = %s", user.getId()));
         return friendsList;
