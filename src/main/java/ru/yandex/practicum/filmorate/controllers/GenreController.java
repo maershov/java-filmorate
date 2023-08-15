@@ -18,6 +18,7 @@ import java.util.List;
 public class GenreController {
 
     private final GenreService genreService;
+
     @GetMapping("/{id}")
     public Genre getGenreById(@PathVariable int id) {
         log.info("Получен запрос на получение жанра с ID - " + id);
