@@ -65,11 +65,6 @@ public class FilmService {
         return updatedFilm;
     }
 
-    public int deleteFilm(int id) {
-        log.info("Фильм удален.");
-        return filmDao.deleteFilm(id);
-    }
-
     public Film addLike(int filmId, int userId) {
         Film film = filmDao.getFilmById(filmId);
         filmDao.addLike(filmId, userId);
@@ -97,13 +92,17 @@ public class FilmService {
     private void validate(Film film) {
         if (film == null) {
             throw new ValidationException("Передан пустой объект", new IOException());
-        } else if (film.getName().isBlank()) {
+        }
+        if (film.getName().isBlank()) {
             throw new ValidationException("Невалидное название", new IOException());
-        } else if (film.getDescription().length() > 200) {
+        }
+        if (film.getDescription().length() > 200) {
             throw new ValidationException("Невалидное описание", new IOException());
-        } else if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28)) || film.getReleaseDate() == null) {
+        }
+        if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
             throw new ValidationException("Невалидная дата релиза", new IOException());
-        } else if (film.getDuration() <= 0) {
+        }
+        if (film.getDuration() <= 0) {
             throw new ValidationException("Невалидная продолжительность", new IOException());
 
         }

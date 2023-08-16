@@ -43,11 +43,6 @@ public class UserService {
         return userDao.updateUser(user);
     }
 
-    public int deleteUser(int id) {
-        log.info("Пользователь удален");
-        return userDao.deleteUser(id);
-    }
-
     public User getUserById(int id) {
         if (id < 0) {
             throw new NotFoundException("Пользователь с id " + id + " не найден");
@@ -93,14 +88,23 @@ public class UserService {
 
     private void validate(User user) {
         if (user == null) {
+            log.info("Ошибка валидаци");
             throw new ValidationException("Передан пустой объект", new IOException());
-        } else if (user.getEmail().isBlank() || !user.getEmail().contains("@")) {
+        }
+        if (user.getEmail().isBlank() || !user.getEmail().contains("@")) {
+            log.info("Ошибка валидаци");
             throw new ValidationException("Невалидный адрес почты", new IOException());
-        } else if (user.getLogin().contains(" ")) {
+        }
+        if (user.getLogin().contains(" ")) {
+            log.info("Ошибка валидаци логин");
             throw new ValidationException("Невалидный логин", new IOException());
-        } else if (user.getName().isBlank()) {
+        }
+        if (user.getName().isBlank()) {
+            log.info("Ошибка валидаци имя");
             user.setName(user.getLogin());
-        } else if (user.getBirthday().isAfter(LocalDate.now())) {
+        }
+        if (user.getBirthday().isAfter(LocalDate.now())) {
+            log.info("Ошибка валидаци др");
             throw new ValidationException("Невалидная дата рождения", new IOException());
         }
     }
