@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dao.film.FilmDao;
 import ru.yandex.practicum.filmorate.dao.genre.GenreDao;
+import ru.yandex.practicum.filmorate.dao.user.UserDao;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
@@ -18,12 +20,14 @@ import java.util.stream.Collectors;
 public class FilmService {
     private final FilmDao filmDao;
     private final GenreDao genreDao;
+    private final UserDao userDao;
 
 
     @Autowired
-    public FilmService(FilmDao fs, GenreDao genreDao) {
+    public FilmService(FilmDao fs, GenreDao genreDao, UserDao ud) {
         this.filmDao = fs;
         this.genreDao = genreDao;
+        this.userDao = ud;
     }
 
     public List<Film> getAllFilms() {
@@ -74,6 +78,9 @@ public class FilmService {
 
     public Film removeLike(int filmId, int userId) {
         Film film = filmDao.getFilmById(filmId);
+        if (userDao.getUserById(userId) == null || film == null) {
+            throw new NotFoundException("Пользователь или фильм не найден");
+        }
         filmDao.removeLike(filmId, userId);
         log.info("Пользователь с id " + userId + " удалил лайк у фильма " + film.getName() + ".");
         return film;
