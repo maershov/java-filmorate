@@ -10,9 +10,7 @@ import ru.yandex.practicum.filmorate.model.User;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -26,113 +24,84 @@ public class UserService {
     }
 
     public List<User> getAllUsers() {
+        log.info("Получен список всех пользователей");
         return userDao.findAllUsers();
     }
 
     public User createUser(User user) {
-        try {
-            validate(user);
-        } catch (ValidationException ex) {
-            log.info("Ошибка заполнения объекта User" + ex.getMessage());
-            throw ex;
-        }
-        if (user.getName() == null || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-        }
+        validate(user);
+        log.info("Пользователь сохранен");
         return userDao.createUser(user);
     }
 
     public User updateUser(User user) {
-        try {
-            validate(user);
-        } catch (ValidationException ex) {
-            log.info("Ошибка заполнения объекта User" + ex.getMessage());
-            throw ex;
+        if (user == null) {
+            throw new NotFoundException("Пользователь не найден");
         }
-        if (user.getName().isEmpty() || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-        }
+        validate(user);
+        log.info("Данные пользователя обновлены");
         return userDao.updateUser(user);
     }
 
-    public User getUserById(Integer id) {
+    public int deleteUser(int id) {
+        log.info("Пользователь удален");
+        return userDao.deleteUser(id);
+    }
+
+    public User getUserById(int id) {
+        if (id < 0) {
+            throw new NotFoundException("Пользователь с id " + id + " не найден");
+        }
+        log.info("Получен пользователь с id " + id);
         return userDao.getUserById(id);
     }
 
-    public User addFriend(Integer userId, Integer friendId) {
-        if (userId <= 0 || friendId <= 0) {
-            throw new NotFoundException(String.format(
-                    "При создании связи между %s и %s были переданы отрицательные значения",
-                    userId, friendId));
+    public User addFriend(int userId, int friendId) {
+        if (userId < 0 || friendId < 0) {
+            throw new NotFoundException("Пользователь с id " + userId + " или " + friendId + " не найден");
         }
-        User user = getUserById(userId);
-        User friend = getUserById(friendId);
-        user.getFriendsIds().add(friendId);
-        friend.getFriendsIds().add(userId);
-        updateUser(user);
-        updateUser(friend);
-        log.info(String.format(
-                "Пользователь %s добавил в друзья %s",
-                userId, friendId));
-        return user;
+
+        log.info("Пользователь " + userId + " добавлен в список друзей " + friendId);
+        userDao.addFriend(userId, friendId);
+        return userDao.getUserById(userId);
     }
 
-    public User removeFriend(Integer userId, Integer friendId) {
-        if (userId <= 0 || friendId <= 0) {
-            throw new NotFoundException(String.format(
-                    "При удалении связи между %s и %s были переданы отрицательные значения",
-                    userId, friendId));
+    public void removeFriend(int userId, int friendId) {
+        if (userId < 0 || friendId < 0) {
+            throw new NotFoundException("Пользователь с id " + userId + " или " + friendId + " не найден");
         }
-        User user = getUserById(userId);
-        User friend = getUserById(friendId);
-        user.getFriendsIds().remove(friendId);
-        friend.getFriendsIds().remove(userId);
-        updateUser(user);
-        updateUser(friend);
-        log.info(String.format("Пользователь %s удалил из друзей %s",
-                userId, friendId));
-        return user;
+
+        log.info("Пользователь " + userId + " удален из списка друзей " + friendId);
+        userDao.removeFriend(userId, friendId);
     }
 
-    public List<User> getUserFriendsList(Integer userId) {
-        if (userId <= 0) {
-            throw new NotFoundException(String.format(
-                    "При поиске списка друзей для %s было передано отрицательные значения",
-                    userId));
+    public List<User> getUserFriendsList(int userId) {
+        if (userId < 0) {
+            throw new NotFoundException("Пользователь с id " + userId + " не найден");
         }
-        User user = userDao.getUserById(userId);
-        List<User> friendsList = new ArrayList<>();
-        for (Integer id : user.getFriendsIds()) {
-            friendsList.add(userDao.getUserById(id));
-        }
-        log.info(String.format("Получен список друзей для пользователя id = %s", user.getId()));
-        return friendsList;
+        log.info("Список друзей пользователя " + userId);
+        return userDao.getFriendsList(userId);
     }
 
-    public List<User> getCommonFriends(Integer userId, Integer friendId) {
-        if (userId <= 0 || friendId <= 0) {
-            throw new NotFoundException(String.format(
-                    "При получении списка общих друзей между %s и %s были переданы отрицательные значения",
-                    userId, friendId));
+    public List<User> getCommonFriends(int userId, int friendId) {
+        if (userId < 0 || friendId < 0) {
+            throw new NotFoundException("Пользователь с id " + userId + " или " + friendId + " не найден");
         }
-        log.info(String.format("Получение списка общих пользователей между %s и %s", userId, friendId));
-        return getUserById(userId).getFriendsIds().stream()
-                .filter(getUserById(friendId).getFriendsIds()::contains)
-                .map(this::getUserById)
-                .collect(Collectors.toList());
+        log.info("Получен список общих друзей пользователя " + userId + " и пользователя " + friendId + ".");
+        return userDao.getMutualFriends(userId, friendId);
     }
 
     private void validate(User user) {
         if (user == null) {
             throw new ValidationException("Передан пустой объект", new IOException());
-        } else if (user.getEmail().isEmpty() || user.getEmail().isBlank()) {
-            throw new ValidationException("Невалидный email", new IOException());
-//        } else if (!user.getEmail().contains("@")) {
-//            throw new ValidationException("Невалидный email - должен содержать @", new IOException());
-        } else if (user.getLogin().isBlank() || user.getLogin().isEmpty() || user.getLogin().contains(" ")) {
-            throw new ValidationException("Невалидный login", new IOException());
+        } else if (user.getEmail().isBlank() || !user.getEmail().contains("@")) {
+            throw new ValidationException("Невалидный адрес почты", new IOException());
+        } else if (user.getLogin().contains(" ")) {
+            throw new ValidationException("Невалидный логин", new IOException());
+        } else if (user.getName().isBlank()) {
+            user.setName(user.getLogin());
         } else if (user.getBirthday().isAfter(LocalDate.now())) {
-            throw new ValidationException("Невалидная дата рождения - дата в будущем", new IOException());
+            throw new ValidationException("Невалидная дата рождения", new IOException());
         }
     }
 }
