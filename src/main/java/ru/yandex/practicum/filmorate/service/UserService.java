@@ -44,34 +44,22 @@ public class UserService {
     }
 
     public User getUserById(int id) {
-//        if (id < 0) {
-//            throw new NotFoundException("Пользователь с id " + id + " не найден");
-//        }
         log.info("Получен пользователь с id " + id);
         return userDao.getUserById(id);
     }
 
     public User addFriend(int userId, int friendId) {
-//        if (userId < 0 || friendId < 0) {
-//            throw new NotFoundException("Пользователь с id " + userId + " или " + friendId + " не найден");
-//        }
         log.info("Пользователь " + userId + " добавлен в список друзей " + friendId);
         userDao.addFriend(userId, friendId);
         return userDao.getUserById(userId);
     }
 
     public void removeFriend(int userId, int friendId) {
-//        if (userId < 0 || friendId < 0) {
-//            throw new NotFoundException("Пользователь с id " + userId + " или " + friendId + " не найден");
-//        }
         log.info("Пользователь " + userId + " удален из списка друзей " + friendId);
         userDao.removeFriend(userId, friendId);
     }
 
     public List<User> getUserFriendsList(int userId) {
-//        if (userId < 0) {
-//            throw new NotFoundException("Пользователь с id " + userId + " не найден");
-//        }
         log.info("Список друзей пользователя " + userId);
         return userDao.getFriendsList(userId);
     }
