@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.ErrorResponse;
+import javax.validation.ConstraintViolationException;
 
 @RestControllerAdvice
 @Slf4j
@@ -32,5 +33,12 @@ public class ExceptionController {
     public ErrorResponse handleException(final Throwable e) {
         log.debug("500: Interval Server Error");
         return new ErrorResponse("Interval Server Error", "Произошла внутрення ошибка");
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleNotFoundConstraintViolation(final ConstraintViolationException e) {
+        log.debug("400: Entity Not Found");
+        return new ErrorResponse("Запись не найдена", e.getMessage());
     }
 }

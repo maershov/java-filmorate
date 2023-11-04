@@ -3,10 +3,7 @@ package ru.yandex.practicum.filmorate.model;
 import lombok.Data;
 import lombok.NonNull;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.HashSet;
 
@@ -22,6 +19,7 @@ public class User {
     private String email;
     @NonNull
     private String login;
+    @NonNull
     private String name;
     @NonNull
     private final LocalDate birthday;
